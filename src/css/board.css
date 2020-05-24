@@ -10,7 +10,6 @@
     transform: translate(-50%, -50%);
 }
 
-/* .board .row .col.hidden {
-    width: 30px;
-    height: 30px;
+/* .board .row .col.flag {
+    src: url('../img/flag.png');
 } */
