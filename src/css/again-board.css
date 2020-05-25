@@ -1,0 +1,40 @@
+.play-again {
+    width: 200px;
+    height: 200px;
+    background-color: #06060a;
+    border-radius: 8px;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.95;
+}
+
+.play-again .again-btn {
+    margin: 20px;
+    width: 100px;
+    height: 35px;
+    outline: none;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 34px;
+    color: red;
+    background: black;
+    opacity: 1;
+    border: 2px red solid;
+}
+
+.play-again .again-btn:hover {
+    color: #ff6262;
+    border: 2px #ff2929 solid;
+}
+
+.play-again .text-lb {
+    color: #02fffd;
+    font-size: 30px;
+    font-weight: bold;
+}

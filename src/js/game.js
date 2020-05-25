@@ -1,9 +1,11 @@
 const startGame = document.querySelector('.start-game');
+// const playAgain = document.querySelector('.play-again');
 const level = document.getElementById('choose-level');
 const startBtn = document.getElementById('start');
+// const againBtn = document.getElementById('againBtn');
 
 startBtn.addEventListener('click', function () {
-    startGame.style.display = 'none';
+    startGame.style.visibility = 'hidden';
     var g = new Game(level.value);
 });
 
@@ -14,41 +16,59 @@ class Game {
         this.rowWidth = 0;
         this.rowHeight = 0;
         this.mineNumbers = 0;
+        this.str = '';
 
         this.setBoard(value);
         this.createBoard(this.rows, this.cols, this.rowWidth, this.rowHeight);
         this.randomPosMine(this.mineNumbers, this.rows, this.cols);
 
-        this.board.addEventListener('contextmenu', (e) => {
-            var cell = e.target;
-            if (cell.className === 'col') return;
-            if (cell.classList.contains('flag')) {
-                cell.classList.remove('flag');
-                cell.classList.add('hidden');
-                cell.src = './src/img/hidden.jpg';
-            } else {
-                cell.classList.remove('hidden');
-                cell.classList.add('flag');
-                cell.src = './src/img/flag.jpg';
-            }
-        });
-        this.board.addEventListener('click', (e) => {
-            var cell = e.target;
-            if (cell.classList.contains('flag')) return;
-            if (cell.className === 'col') return;
-            var row = parseInt(cell.dataset.row);
-            var col = parseInt(cell.dataset.col);
+        this.clickEvent = this.clickEvent.bind(this);
+        this.tryAgain = this.tryAgain.bind(this);
 
-            console.log(row, col);
+        this.board.addEventListener('contextmenu', this.contextMenuEvent);
 
-            if (cell.classList.contains("mine")) {
-                // gameOver(false);
-                console.log('++++++++++++++++');
-                console.log('Game over');
-            } else {
-                this.reveal(row, col);
+        this.board.addEventListener('click', this.clickEvent);
+    }
+
+    contextMenuEvent(e) {
+        var tiles = e.target;
+        if (tiles.className === 'col') return;
+        if (tiles.classList.contains('flag')) {
+            tiles.classList.remove('flag');
+            tiles.classList.add('hidden');
+            tiles.src = './src/img/hidden.jpg';
+        } else {
+            tiles.classList.remove('hidden');
+            tiles.classList.add('flag');
+            tiles.src = './src/img/flag.jpg';
+        }
+    }
+
+    clickEvent(e) {
+        var tiles = e.target;
+        if (tiles.classList.contains('flag')) return;
+        if (tiles.className === 'col') return;
+        var row = parseInt(tiles.dataset.row);
+        var col = parseInt(tiles.dataset.col);
+
+        if (tiles.classList.contains("mine")) {
+            this.str = 'You Lose!';
+            this.gameOver();
+            switch (this.mineNumbers) {
+                case 10:
+                    setTimeout(this.tryAgain, 3000);
+                    break;
+                case 40:
+                    setTimeout(this.tryAgain, 12000);
+                    break;
+
+                default:
+                    setTimeout(this.tryAgain, 20000);
+                    break;
             }
-        })
+        } else {
+            this.reveal(row, col);
+        }
     }
 
     setBoard(value) {
@@ -96,13 +116,13 @@ class Game {
 
     randomPosMine(numbers, rows, cols) {
         var x, y;
-        var cells;
+        var tiles;
         for (let i = 0; i < numbers; i++) {
             x = Math.floor(Math.random() * rows);
             y = Math.floor(Math.random() * cols);
-            cells = document.querySelectorAll(`[data-row="${x}"][data-col="${y}"]`);
-            if (!cells[0].classList.contains('mine')) {
-                cells[0].classList.add('mine');
+            tiles = document.querySelectorAll(`[data-row="${x}"][data-col="${y}"]`);
+            if (!tiles[0].classList.contains('mine')) {
+                tiles[0].classList.add('mine');
             } else {
                 i--;
             }
@@ -117,20 +137,19 @@ class Game {
     helper(i, j) {
         if (i >= this.rows || j >= this.cols || i < 0 || j < 0) return;
 
-        var cell = document.querySelectorAll(`[data-row="${i}"][data-col="${j}"]`);
+        var tiles = document.querySelectorAll(`[data-row="${i}"][data-col="${j}"]`);
         var mineCount = this.getMineCount(i, j);
-        console.log(mineCount);
 
-        if (!cell[0].classList.contains("hidden") || cell[0].classList.contains("mine")) return;
+        if (!tiles[0].classList.contains("hidden") || tiles[0].classList.contains("mine")) return;
 
-        cell[0].classList.remove("hidden");
+        tiles[0].classList.remove("hidden");
 
         if (mineCount > 0) {
-            cell[0].src = `./src/img/${mineCount}.jpg`;
+            tiles[0].src = `./src/img/${mineCount}.jpg`;
             return;
         }
 
-        cell[0].src = './src/img/blank.png';
+        tiles[0].src = './src/img/blank.png';
 
         for (let di = -1; di <= 1; di++) {
             for (let dj = -1; dj <= 1; dj++) {
@@ -149,14 +168,59 @@ class Game {
                 if (ni >= this.rows || nj >= this.cols || nj < 0 || ni < 0) {
                     continue;
                 } else {
-                    var cells = document.querySelectorAll(`[data-row="${ni}"][data-col="${nj}"]`);
-                    if (cells[0].classList.contains("mine")) {
+                    var tiles = document.querySelectorAll(`[data-row="${ni}"][data-col="${nj}"]`);
+                    if (tiles[0].classList.contains("mine")) {
                         count++;
                     }
                 }
             }
         }
         return count;
+    }
+
+    gameOver() {
+        this.board.removeEventListener('contextmenu', this.contextMenuEvent);
+        this.board.removeEventListener('click', this.clickEvent);
+
+        var tiles = document.querySelectorAll('.mine');
+        var tilesLength = tiles.length;
+        var i = 0;
+
+        var id = setInterval(appearGradually, 200);
+
+        function appearGradually() {
+            if (i >= tilesLength - 1) {
+                clearInterval(id);
+                id = 0;
+            }
+            tiles[i].classList.remove('hidden');
+            tiles[i].src = './src/img/bomb.jpg';
+            i++;
+        }
+    }
+
+    tryAgain() {
+        var playAgain = document.createElement('div');
+        playAgain.setAttribute('class', 'play-again');
+
+        var againBtn = document.createElement('button');
+        var notification = document.createElement('label');
+
+        againBtn.setAttribute('class', 'again-btn');
+        againBtn.innerText = 'Try again';
+
+        notification.setAttribute('class', 'text-lb');
+        notification.innerHTML = this.str;
+
+        playAgain.appendChild(notification);
+        playAgain.appendChild(againBtn);
+        document.body.appendChild(playAgain);
+
+        playAgain.addEventListener('click', () => {
+            this.board.remove();
+            playAgain.remove();
+            startGame.style.visibility = 'visible';
+        });
     }
 }
 
