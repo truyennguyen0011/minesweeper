@@ -126,7 +126,6 @@ class Game {
             } else {
                 i--;
             }
-            console.log(x, y);
         }
     }
 
@@ -135,6 +134,11 @@ class Game {
     }
 
     helper(i, j) {
+        var colCount = this.countColOpen();
+        if (colCount === ((this.rows * this.cols) - this.mineNumbers)) {
+            this.gameWin();
+        }
+
         if (i >= this.rows || j >= this.cols || i < 0 || j < 0) return;
 
         var tiles = document.querySelectorAll(`[data-row="${i}"][data-col="${j}"]`);
@@ -176,6 +180,26 @@ class Game {
             }
         }
         return count;
+    }
+    
+    countColOpen() {
+        var count = 1;
+        var cols = document.querySelectorAll('.col');
+
+        cols.forEach(col => {
+            if (col.className === 'col') {
+                count++;
+            }
+        });
+        return count;
+    }
+
+    gameWin() {
+        this.str = 'You Win!';
+        this.board.removeEventListener('contextmenu', this.contextMenuEvent);
+        this.board.removeEventListener('click', this.clickEvent);
+
+        this.tryAgain();
     }
 
     gameOver() {
