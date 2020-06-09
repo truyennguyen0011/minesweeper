@@ -1,4 +1,6 @@
 const startGame = document.querySelector('.start-game');
+var img = document.querySelectorAll('img');
+
 // const playAgain = document.querySelector('.play-again');
 const level = document.getElementById('choose-level');
 const startBtn = document.getElementById('start');
@@ -61,7 +63,6 @@ class Game {
                 case 40:
                     setTimeout(this.tryAgain, 12000);
                     break;
-
                 default:
                     setTimeout(this.tryAgain, 20000);
                     break;
@@ -227,11 +228,11 @@ class Game {
         var playAgain = document.createElement('div');
         playAgain.setAttribute('class', 'play-again');
 
-        var againBtn = document.createElement('button');
+        var againBtn = document.createElement('a');
         var notification = document.createElement('label');
 
         againBtn.setAttribute('class', 'again-btn');
-        againBtn.innerText = 'Try again';
+        againBtn.innerText = 'Try Again';
 
         notification.setAttribute('class', 'text-lb');
         notification.innerHTML = this.str;
@@ -240,7 +241,7 @@ class Game {
         playAgain.appendChild(againBtn);
         document.body.appendChild(playAgain);
 
-        playAgain.addEventListener('click', () => {
+        againBtn.addEventListener('click', () => {
             this.board.remove();
             playAgain.remove();
             startGame.style.visibility = 'visible';

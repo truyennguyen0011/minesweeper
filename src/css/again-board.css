@@ -1,41 +1,78 @@
 .play-again {
-    width: 200px;
+    width: 300px;
     height: 200px;
-    background-color: #06060a;
+    background-color: #000;
     border-radius: 8px;
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    border: red 1px solid;
+    border: #fff 1px solid;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     opacity: 0.95;
+    z-index: 1;
 }
 
 .play-again .again-btn {
-    margin: 20px;
-    width: 100px;
-    height: 35px;
-    outline: none;
-    font-size: 15px;
-    font-weight: 500;
-    border-radius: 34px;
-    color: red;
-    background: black;
     opacity: 1;
-    border: 2px red solid;
+    cursor: pointer;
+    position: absolute;
+    left: 50%;
+    top: 70%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+    color: #fff;
+    font-size: 24px;
+    text-decoration: none;
+    background: linear-gradient(90deg, #03a9f4, #f51919, #ffeb3b, #03a9f4);
+    background-size: 400%;
+    border-radius: 30px;
+    z-index: 2;
 }
 
 .play-again .again-btn:hover {
-    color: #ff6262;
-    border: 2px #ff2929 solid;
+    animation: animate 8s linear infinite;
+}
+
+@keyframes animate {
+    0% {
+        background-position: 0%;
+    }
+    100% {
+        background-position: 400%;
+    }
+}
+
+.play-again .again-btn::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    z-index: -2;
+    background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+    background-size: 400%;
+    border-radius: 40px;
+    opacity: 0;
+    transition: 0.5s;
+}
+
+.play-again .again-btn:hover::before  {
+    filter: blur(20px);
+    opacity: 1;
 }
 
 .play-again .text-lb {
-    color: #02fffd;
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    transform: translate(-50%, -50%);
+    color: #fff;
     font-size: 30px;
     font-weight: bold;
+    animation: animate 8s linear infinite;
 }
